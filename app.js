@@ -2,10 +2,13 @@ const express = require('express');
 
 const app = express();
 const morgan = require('morgan'); //3rd Party Middleware
+const cors = require('cors');
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
+const miscRouter = require('./routes/miscRouter');
 
 //Middleware for JsonReq
+app.use(cors());
 app.use(express.json());
 app.use(express.static(`${__dirname}/public`));
 
@@ -30,6 +33,7 @@ app.use((req, res, next) => {
 //Routes
 app.use('/api/v1/users', userRouter);
 app.use('/api/v1/tours', tourRouter);
+app.use('/api/v1/misc', miscRouter);
 
 //Unhadled Route Handler
 app.all('*', (req, res, next) => {
@@ -37,7 +41,6 @@ app.all('*', (req, res, next) => {
   //   status: 'failed',
   //   message: `${req.originalUrl} URL not found`,
   // });
-
   const err = new Error(`${req.originalUrl} URL not found`);
   err.status = 'fail';
   err.statusCode = 404;
